@@ -1,0 +1,22 @@
+name: auto-update-quiz
+on:
+  schedule:            # 每年 1 月 10 日 00:30 台灣時間
+    - cron: '30 16 9 1 *'   # GitHub 用 UTC；16:30=+8h→00:30
+  workflow_dispatch:   # 允許手動觸發
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pdfplumber pandas requests
+      - name: fetch & convert
+        run: python scripts/fetch_quiz.py
+      - name: commit
+        run: |
+          git config user.name  AutoUpdate
+          git config user.email auto@users.noreply.github.com
+          git add quiz/*.json quiz/*.pdf
+          git commit -m "auto: update quiz $(date '+%Y')" || echo "no change"
+          git push
