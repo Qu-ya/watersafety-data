@@ -25,10 +25,13 @@ print("GET list page …")
 html = sess.get(LIST_URL, headers=HEADERS, timeout=30).text
 
 # 2. 用 BeautifulSoup 找出 PDF 相對路徑
-soup = BeautifulSoup(html, "lxml")
-link = soup.select_one("div.listbox a[href*='.pdf']")   # 第一個 .pdf 連結
-if not link:
+m = re.search(r"['\"](LGM/.+?\.pdf)['\"]", html)      # ← 用 regex 抓
+if not m:
     raise RuntimeError("在題庫頁面找不到 .pdf 連結")
+rel_path = m.group(1)
+PDF_URL  = f"{BASE}/{rel_path}"
+print("PDF URL  ➜", PDF_URL)
+
 
 rel_path = re.search(r"(LGM/.+?\.pdf)", link["href"]).group(1)
 PDF_URL = f"{BASE}/{rel_path}"
