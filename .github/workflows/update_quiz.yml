@@ -1,33 +1,31 @@
-# .github/workflows/update_quiz.yml
 name: auto-update-quiz
+
 on:
-  #schedule:            # 每年 1 月 10 日 00:30 台灣時間
-    #- cron: '30 16 1 * *'   # GitHub 用 UTC；16:30=+8h→00:30
-  workflow_dispatch:   # 允許手動觸發
+  workflow_dispatch:
+  schedule:
+    - cron: '30 16 1 * *'  # 每月 1 號 00:30 (UTC+8)
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4+
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-      - uses: actions/setup-python@v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # ← 這裡開始
       - name: Install dependencies
-        run: |
-          pip install pdfplumber pandas requests beautifulsoup4 lxml
-      # ← 安裝好後才跑下方的腳本
+        run: pip install requests pandas pdfplumber beautifulsoup4 lxml
 
       - name: fetch & convert
         run: python scripts/fetch_quiz.py
 
-      - name: commit
+      - name: Commit updated quiz
         run: |
-          git config user.name  "AutoUpdate"
+          git config user.name "AutoUpdate"
           git config user.email "auto@users.noreply.github.com"
-          git add quiz/*.json quiz/*.pdf
-          git commit -m "auto: update quiz $(date +'%Y')" || echo "no change"
+          git add quiz/*.pdf quiz/*.json
+          git diff --quiet || git commit -m "auto-update quiz $(date +'%Y')" 
           git push
