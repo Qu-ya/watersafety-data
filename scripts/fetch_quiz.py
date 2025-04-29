@@ -25,12 +25,26 @@ HEADERS = {
     "Referer": "https://isports.sa.gov.tw/apps/FDownload.aspx",
 }
 
-resp = requests.get(PDF_URL, headers=HEADERS, timeout=30)
+# 下載 PDF（必須 POST，攜帶表單參數）
+POST_URL = "https://isports.sa.gov.tw/apps/FDownload.aspx"
+payload = {
+    # 這四個欄位一定要有，值固定
+    "SYS": "LGM",
+    "MENU_CD": "M10",
+    "ITEM_CD": "T07",
+    "MENU_PRG_CD": "3",
+    # 下面兩個是我們真正要指定的東西
+    "FILE_PATH": "LGM/09/04/1120214/009f3c95-7d06-43d9-a6d8-513a779be3e4.pdf",
+    "FILE_NAME": "114年度救生員資格檢定學科測驗題庫.pdf",
+}
+resp = requests.post(POST_URL, data=payload, headers=HEADERS, timeout=30)
+
 if not resp.headers.get("content-type", "").startswith("application/pdf"):
     raise RuntimeError(
         f"下載失敗：HTTP {resp.status_code} - {resp.headers.get('content-type')}"
     )
-pdf_bytes = resp.content
+
+pdf_bytes = resp.content          # 後續解析用這個
 print("PDF OK →", PDF_URL)
 
 # 3. 準備輸出目錄與檔名
