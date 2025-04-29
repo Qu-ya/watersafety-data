@@ -1,71 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-從體育署救生員題庫頁面，自動抓取當年度 PDF 並轉成 JSON
+自動下載體育署救生員題庫 PDF，解析後輸出 JSON。
 """
 
-import datetime, io, pathlib, re, json
-import requests, pdfplumber, pandas as pd
-from bs4 import BeautifulSoup          # ← 新加
-# --------------------------------------------------
-OUTDIR = pathlib.Path(__file__).parent.parent / "quiz"
-OUTDIR.mkdir(exist_ok=True)
+import io, re, datetime, pathlib, requests
+import pdfplumber, pandas as pd
 
-BASE = "https://isports.sa.gov.tw"
+# 1. 原列表頁網址
 LIST_URL = (
-    f"{BASE}/apps/Essay.aspx"
-    "?SYS=LGM&MENU_CD=M10&ITEM_CD=T07&MENU_PRG_CD=3&ITEM_PRG_CD=3"
+    "https://isports.sa.gov.tw/apps/Essay.aspx"
+    "?SYS=LGM&MENU_PRG_CD=3&ITEM_PRG_CD=3&ITEM_CD=T07"
 )
+# 請求 Header 偽裝瀏覽器
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-    "Referer": LIST_URL,               # ← 讓第二次請求帶正確來源
+    "Referer": "https://isports.sa.gov.tw/apps/Essay.aspx",
 }
 
-# 1. 先抓題庫頁面；同一個 session 會保存 cookie
-sess = requests.Session()              # ← 新加
-print("GET list page …")
-html = sess.get(LIST_URL, headers=HEADERS, timeout=30).text
-
-# 2. 用 BeautifulSoup 找出 PDF 相對路徑
-m = re.search(r"FILE_PATH=([^&'\"]+\.pdf)", html)      # ← 用 regex 抓
+# 2. GET 列表頁，直接用 regex 抓出 PDF 路徑
+resp = requests.get(LIST_URL, headers=HEADERS, timeout=30)
+html = resp.text
+m = re.search(r"downLoadFileWithName\('([^']+\.pdf)'", html)
 if not m:
-    print("HTML 前 300 字：\n", html[:300])   # 先把網頁開頭印出來
-    raise RuntimeError("在題庫頁面找不到 .pdf 連結")
+    raise RuntimeError("在列表頁找不到 PDF 路徑，請檢查 HTML")
+rel_path = m.group(1)  # e.g. LGM/09/04/.../xxx.pdf
+PDF_URL = f"https://isports.sa.gov.tw/{rel_path}"
+print("PDF URL →", PDF_URL)
 
-rel_path = re.search(r"(LGM/.+?\.pdf)", link["href"]).group(1)
-PDF_URL = f"{BASE}/{rel_path}"
-print("PDF URL  ➜", PDF_URL)
+# 3. Download PDF
+resp2 = requests.get(PDF_URL, headers=HEADERS, timeout=30)
+ct = resp2.headers.get("content-type", "")
+if resp2.status_code != 200 or not ct.startswith("application/pdf"):
+    raise RuntimeError(f"下載失敗：HTTP {resp2.status_code} - {ct}")
+pdf_bytes = resp2.content
+print("✅ PDF OK", len(pdf_bytes), "bytes")
 
-# 3. 用同一個 session 下載 PDF
-print("download pdf …")
-resp = sess.get(PDF_URL, headers=HEADERS, timeout=30)
-ct   = resp.headers.get("content-type", "")
-if not ct.startswith("application/pdf"):
-    raise RuntimeError(f"下載失敗：HTTP {resp.status_code} - {ct}")
+# 4. 存成 quiz_YYYY.pdf
+year_tag = datetime.date.today().year - 1911  # 2025→114
+outdir = pathlib.Path(__file__).parent.parent / "quiz"
+outdir.mkdir(exist_ok=True)
+pdf_path = outdir / f"quiz_{year_tag}.pdf"
+pdf_path.write_bytes(pdf_bytes)
+print("Saved PDF →", pdf_path.name)
 
-pdf_bytes = resp.content
-print("PDF OK ✓", len(pdf_bytes), "bytes")
-
-# 4. 存檔
-year_tag = datetime.date.today().year - 1911
-(OUTDIR / f"quiz_{year_tag}.pdf").write_bytes(pdf_bytes)
-
-# 5. 解析 PDF → DataFrame
+# 5. 解析 PDF → rows
 rows = []
 with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
     for page in pdf.pages:
         txt = page.extract_text() or ""
-        for n, q, ans in re.findall(r"(\d+)\.(.+?)(\([ABCDOX]\))", txt):
-            typ  = "TF" if ans in "OX" else "MC"
+        for n, q, ans in re.findall(r"(\d+)\.([^\n]+?)\(([ABCDOX])\)", txt):
+            typ = "TF" if ans in "OX" else "MC"
             rows.append({
-                "id"      : f"Q{int(n):04}",
-                "chapter" : f"CH{int(n)//100+1:02}",
-                "type"    : typ,
-                "q"       : q.strip(),
-                "choices" : "" if typ=="TF" else "A|B|C|D",
-                "ans"     : ans,
-                "explain" : ""
+                "id":   f"Q{int(n):04}",
+                "chapter": f"CH{int(n)//100+1:02}",
+                "type": typ,
+                "q":    q.strip(),
+                "choices": "" if typ=="TF" else "A|B|C|D",
+                "ans":  ans,
+                "explain": ""
             })
 
 # 6. 輸出 JSON
-json_path = OUTDIR / f"quiz_lifeguard_{year_tag}.json"
-pd.DataFrame(rows).to_json(json_path, orient="records", indent=2, force_ascii=False)
-print("Saved", json_path, "with", len(rows), "questions")
+json_path = outdir / f"quiz_lifeguard_{year_tag}.json"
+pd.DataFrame(rows).to_json(json_path, orient="records",
+                          indent=2, force_ascii=False)
+print("Saved JSON →", json_path.name, f"({len(rows)} questions)")
