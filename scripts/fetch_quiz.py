@@ -5,11 +5,12 @@
 import requests, pathlib, io, datetime, pdfplumber, pandas as pd, re
 
 # 1. 直接指定 114 年度 PDF（明年換這行）
-# 1. 114 年度 PDF 的下載網址
+# 1. 114 年度題庫 PDF 下載網址
 PDF_URL = (
     "https://isports.sa.gov.tw/apps/FDownload.aspx"
     "?SYS=LGM&MENU_CD=M10&ITEM_CD=T07&MENU_PRG_CD=3&ITEM_PRG_CD=3"
     "&FILE_PATH=LGM%2F09%2F04%2F1120214%2F009f3c95-7d06-43d9-a6d8-513a779be3e4.pdf"
+    "&DOWNLOAD_FILE_NO=F000008285"
     "&FILE_NAME=114%E5%B9%B4%E5%BA%A6%E6%95%91%E7%94%9F%E5%93%A1%E8%B3%87%E6%A0%BC%E6%AA%A2%E5%AE%9A%E5%AD%B8%E7%A7%91%E6%B8%AC%E9%A9%97%E9%A1%8C%E5%BA%AB.pdf"
 )
 
