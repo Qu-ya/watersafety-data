@@ -27,11 +27,8 @@ html = sess.get(LIST_URL, headers=HEADERS, timeout=30).text
 # 2. 用 BeautifulSoup 找出 PDF 相對路徑
 m = re.search(r"FILE_PATH=([^&'\"]+\.pdf)", html)      # ← 用 regex 抓
 if not m:
+    print("HTML 前 300 字：\n", html[:300])   # 先把網頁開頭印出來
     raise RuntimeError("在題庫頁面找不到 .pdf 連結")
-rel_path = m.group(1)
-PDF_URL  = f"{BASE}/{rel_path}"
-print("PDF URL  ➜", PDF_URL)
-
 
 rel_path = re.search(r"(LGM/.+?\.pdf)", link["href"]).group(1)
 PDF_URL = f"{BASE}/{rel_path}"
