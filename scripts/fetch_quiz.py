@@ -17,20 +17,20 @@ PDF_URL = (
 
 # 2. 下載 PDF（帶 Header＋驗證）
 HEADERS = {
-    "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-        " (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
-    "Referer":
-        "https://isports.sa.gov.tw/apps/Essay.aspx?SYS=LGM&ITEM_CD=T07"
+    # 隨便一個常見瀏覽器 UA
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/120.0 Safari/537.36",
+    # 告訴伺服器我們確實來自同一頁面
+    "Referer": "https://isports.sa.gov.tw/apps/FDownload.aspx",
 }
-resp = requests.get(PDF_URL, headers=HEADERS, timeout=30)
-if resp.status_code != 200 or "application/pdf" not in resp.headers.get("content-type", ""):
-    raise RuntimeError(f"下載失敗：HTTP {resp.status_code} - {resp.headers.get('content-type')}")
-if not resp.content.startswith(b"%PDF"):
-    raise RuntimeError("收到的不是 PDF！前 100 位元組：\n" +
-                       resp.content[:100].decode("latin-1", "ignore"))
 
-pdf_bytes = resp.content                 # ← 之後解析就用這個
+resp = requests.get(PDF_URL, headers=HEADERS, timeout=30)
+if not resp.headers.get("content-type", "").startswith("application/pdf"):
+    raise RuntimeError(
+        f"下載失敗：HTTP {resp.status_code} - {resp.headers.get('content-type')}"
+    )
+pdf_bytes = resp.content
 print("PDF OK →", PDF_URL)
 
 # 3. 準備輸出目錄與檔名
