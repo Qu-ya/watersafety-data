@@ -1,21 +1,35 @@
 """
 下載救生員題庫 PDF → 轉成 JSON
-每年只要改最上面的 PDF_URL 即可
+每年只改最上方 PDF_URL
 """
-
 import requests, pathlib, io, datetime, pdfplumber, pandas as pd, re
 
-# 1. 直接指定 114 年度 PDF（明年換 115 只改這一行）
+# 1. 直接指定 114 年度 PDF（明年換這行）
 PDF_URL = "https://isports.sa.gov.tw/LGM/09/04/1120214/009f3c95-7d06-43d9-a6d8-513a779be3e4.pdf"
 
-OUTDIR = pathlib.Path(__file__).parent.parent / "quiz"
+# 2. 下載 PDF（帶 Header＋驗證）
+HEADERS = {
+    "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        " (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Referer":
+        "https://isports.sa.gov.tw/apps/Essay.aspx?SYS=LGM&ITEM_CD=T07"
+}
+resp = requests.get(PDF_URL, headers=HEADERS, timeout=30)
+if resp.status_code != 200 or "application/pdf" not in resp.headers.get("content-type", ""):
+    raise RuntimeError(f"下載失敗：HTTP {resp.status_code} - {resp.headers.get('content-type')}")
+if not resp.content.startswith(b"%PDF"):
+    raise RuntimeError("收到的不是 PDF！前 100 位元組：\n" +
+                       resp.content[:100].decode("latin-1", "ignore"))
+
+pdf_bytes = resp.content                 # ← 之後解析就用這個
+print("PDF OK →", PDF_URL)
+
+# 3. 準備輸出目錄與檔名
+OUTDIR   = pathlib.Path(__file__).parent.parent / "quiz"
 OUTDIR.mkdir(exist_ok=True)
-
-# 2. 下載 PDF 並存檔
-pdf_bytes = requests.get(PDF_URL, timeout=30).content
-year_tag  = datetime.date.today().year - 1911          # 2025→114
+year_tag = datetime.date.today().year - 1911          # 2025→114
 (OUTDIR / f"quiz_{year_tag}.pdf").write_bytes(pdf_bytes)
-
 print("PDF URL =", PDF_URL)
 
 # 3. 解析 PDF → rows
