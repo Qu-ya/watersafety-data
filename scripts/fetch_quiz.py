@@ -11,9 +11,12 @@ LIST_URL = "https://isports.sa.gov.tw/apps/Essay.aspx?SYS=LGM&MENU_PRG_CD=3&ITEM
 html = requests.get(LIST_URL, timeout=30).text
 
 # 2. 用正則抽出第一個 PDF 相對路徑
-m = re.search(r"downLoadFileWithName\('([^']+\.pdf)'", html)
+pdf_pattern = re.compile(r"downLoadFileWithName\(\s*'([^']+?\.pdf)'", re.I)
+m = pdf_pattern.search(html)
+
 if not m:
-    raise RuntimeError("列表頁沒有找到 PDF 連結，請檢查 HTML 格式")
+    raise RuntimeError("找不到 PDF 連結，請檢查 HTML，前 500 字：\n" + html[:500])
+
 relative_path = m.group(1)               # 例：LGM/09/04/1120214/xxxx.pdf
 PDF_URL = f"https://isports.sa.gov.tw/{relative_path}"
 print("PDF URL =", PDF_URL)
