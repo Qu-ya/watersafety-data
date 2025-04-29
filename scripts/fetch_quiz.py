@@ -8,6 +8,15 @@ OUTDIR.mkdir(exist_ok=True)
 
 # 1. 抓列表頁（固定網址）
 LIST_URL = "https://isports.sa.gov.tw/apps/Essay.aspx?SYS=LGM&MENU_PRG_CD=3&ITEM_PRG_CD=3&ITEM_CD=T07"
+HEADERS = {
+    "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Referer": "https://isports.sa.gov.tw/"
+}
+...
+resp = requests.get(LIST_URL, headers=HEADERS, timeout=30)
+html = resp.text
+
 html = requests.get(LIST_URL, timeout=30).text
 
 # 2. 用正則抽出第一個 PDF 相對路徑
@@ -22,7 +31,7 @@ PDF_URL = f"https://isports.sa.gov.tw/{relative_path}"
 print("PDF URL =", PDF_URL)
 
 # 3. 下載 PDF
-pdf_bytes = requests.get(PDF_URL, timeout=30).content
+pdf_bytes = requests.get(PDF_URL, headers=HEADERS, timeout=30).content
 year_tag   = datetime.date.today().year - 1911          # 2025→114
 (pdf_path := OUTDIR / f"quiz_{year_tag}.pdf").write_bytes(pdf_bytes)
 
