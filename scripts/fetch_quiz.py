@@ -21,8 +21,11 @@ HEADERS = {
 
 # 2. 取得題庫列表頁 (Essay.aspx)
 LIST_URL = (
-    "https://isports.sa.gov.tw/apps/Essay.aspx"
-    "?SYS=LGM&MENU_PRG_CD=3&ITEM_PRG_CD=3&ITEM_CD=T07"
+  "https://isports.sa.gov.tw/apps/Essay.aspx"
+  "?SYS=LGM"
+  "&MENU_CD=M10"
+  "&ITEM_PRG_CD=3"
+  "&ITEM_CD=T07"
 )
 resp1 = session.get(LIST_URL, headers=HEADERS, timeout=30)
 resp1.raise_for_status()
