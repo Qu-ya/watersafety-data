@@ -2,8 +2,7 @@ name: auto-update-quiz
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '30 16 1 * *'  # 每月 1 號 00:30 (UTC+8)
+    # 這樣你就可以手動點「Run workflow」來執行
 
 jobs:
   build:
@@ -17,8 +16,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests pandas pdfplumber beautifulsoup4 lxml
-
+        run: pip install requests pdfplumber pandas
 
       - name: fetch & convert
         run: python scripts/fetch_quiz.py
