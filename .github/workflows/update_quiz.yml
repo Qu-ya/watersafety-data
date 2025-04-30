@@ -19,7 +19,7 @@ jobs:
         run: pip install requests pdfplumber pandas
 
       - name: fetch & convert
-        run: python scripts/fetch_quiz.py
+        run: python scripts/parse_quiz.py
 
       - name: Commit updated quiz
         run: |
