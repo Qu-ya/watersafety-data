@@ -19,9 +19,9 @@ LIST_URL = (
     "https://isports.sa.gov.tw/apps/Essay.aspx"
     "?SYS=LGM"
     "&MENU_CD=M10"
-    "&ITEM_PRG_CD=3"
     "&ITEM_CD=T07"
     "&MENU_PRG_CD=3"
+    "&ITEM_PRG_CD=3"
 )
 
 # 2. 準備輸出資料夾
