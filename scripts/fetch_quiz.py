@@ -29,9 +29,12 @@ LIST_URL = (
     "https://isports.sa.gov.tw/apps/Essay.aspx"
     "?SYS=LGM"
     "&MENU_CD=M10"
-    "&ITEM_PRG_CD=3"
+    "&ITEM_PRG_CD=3"        # 補上這行
     "&ITEM_CD=T07"
+    "&MENU_PRG_CD=3"        # 確保兩個 PRG 參數都在
 )
+
+
 print("GET list page …", LIST_URL)
 resp = session.get(LIST_URL, headers=HEADERS, timeout=30)
 resp.raise_for_status()
