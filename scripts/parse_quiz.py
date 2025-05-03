@@ -8,6 +8,7 @@ with pdfplumber.open(IN_PDF) as pdf:
     rows = []
     for page in pdf.pages:
         txt = page.extract_text() or ""
+         print(txt)  # 加在這裡！
         for n, q, ans in re.findall(r"(\d+)\.([^\n]+?)\(([ABCDOX])\)", txt):
             # ...（跟你原本解析 row 的邏輯一樣）
             rows.append({...})
