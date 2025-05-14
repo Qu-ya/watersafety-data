@@ -37,15 +37,7 @@ for sheet in xls.sheet_names:
 df = pd.concat(frames, ignore_index=True)
 
 # ─── 3. 列出所有欄位，抓題目欄並過濾 ────────────────────
-print("🔍 所有欄位名稱:", list(df.columns), file=sys.stdout)
-
-try:
-    question_col = next(c for c in df.columns if "題" in c)
-    print(f"✅ 偵測到題目欄: '{question_col}'", file=sys.stdout)
-except StopIteration:
-    # 如果真的找不到，就用最後一個欄
-    question_col = df.columns[-1]
-    print(f"⚠️ 找不到含「題」的欄位，改用: '{question_col}'", file=sys.stdout)
+question_col = "question"
 
 # 3. 過濾空值 & 只取前 701 筆
 df = df[df["question"].notna()].iloc[:701].reset_index(drop=True)
