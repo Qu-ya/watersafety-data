@@ -17,15 +17,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pdfplumber
+        run: pip install pandas openpyxl
 
-      - name: Parse quiz to JSON
-        run: python scripts/parse_quiz.py
+      - name: Parse Excel to JSON
+        run: python scripts/parse_excel.py
 
       - name: Commit parsed JSON
         run: |
           git config user.name "AutoUpdate"
           git config user.email "auto@github.com"
           git add quiz/quiz_114_parsed.json
-          git diff --quiet || git commit -m "自動解析 701 題"
+          git diff --quiet || git commit -m "自動解析 701 筆題庫"
           git push
+
