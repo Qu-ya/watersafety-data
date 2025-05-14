@@ -25,10 +25,11 @@ jobs:
       - name: Parse Excel to JSON
         run: python scripts/parse_excel.py
 
-      - name: Commit parsed JSON
-        run: |
-          git config user.name "AutoUpdate"
-          git config user.email "auto@github.com"
-          git add quiz/quiz_114_parsed.json
-          git diff --quiet || git commit -m "自動解析 701 筆題庫"
-          git push
+            - name: Commit parsed JSON
+              run: |
+                git config user.name "AutoUpdate"
+                git config user.email "auto@github.com"
+                git add quiz/quiz_114_parsed.json
+                git diff --cached --quiet || git commit -m "自動解析 701 筆題庫"
+                git push
+
