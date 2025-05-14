@@ -1,8 +1,9 @@
 name: auto-update-quiz
 
 on:
-  workflow_dispatch:
-    # 這樣你就可以手動點「Run workflow」來執行
+  workflow_dispatch:    # 手動觸發
+  schedule:
+    - cron: "0 2 * * *" # 每天台北時間 10:00（UTC02:00）自動跑
 
 jobs:
   build:
@@ -13,18 +14,18 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests pdfplumber pandas
+        run: pip install pdfplumber
 
-      - name: fetch & convert
+      - name: Parse quiz to JSON
         run: python scripts/parse_quiz.py
 
-      - name: Commit updated quiz
+      - name: Commit parsed JSON
         run: |
           git config user.name "AutoUpdate"
-          git config user.email "auto@users.noreply.github.com"
-          git add quiz/*.pdf quiz/*.json
-          git diff --quiet || git commit -m "auto-update quiz $(date +'%Y')" 
+          git config user.email "auto@github.com"
+          git add quiz/quiz_114_parsed.json
+          git diff --quiet || git commit -m "自動解析 701 題"
           git push
