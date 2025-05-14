@@ -52,7 +52,7 @@ for idx, row in df.iterrows():
     records.append({
         "num":      idx + 1,
         "chapter":  row["chapter"],
-        "question": row[question_col].strip(),
+        "question": str(row[question_col]).strip(),
         # "answer": row.get("答案","")   # 如果要帶答案請取消註解
     })
 
