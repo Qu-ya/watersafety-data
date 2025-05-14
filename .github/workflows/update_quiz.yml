@@ -1,3 +1,5 @@
+permissions:
+  contents: write
 name: auto-update-quiz
 
 on:
