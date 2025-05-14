@@ -1,5 +1,6 @@
 permissions:
   contents: write
+
 name: auto-update-quiz
 
 on:
@@ -31,5 +32,6 @@ jobs:
           git add quiz/quiz_114_parsed.json
           git diff --quiet || git commit -m "自動解析 701 筆題庫"
           git push
+
 
 
