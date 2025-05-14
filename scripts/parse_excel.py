@@ -1,51 +1,62 @@
-import pandas as pd, json
-from pathlib import Path
-qz = HERE / "quiz"
-xlsx_files = list(qz.glob("*.xlsx"))
-assert xlsx_files, "找不到任何 .xlsx"
-IN_XLSX = xlsx_files[0]
-OUT_JSON = HERE / "quiz" / "quiz_114_parsed.json"
+# scripts/parse_excel.py
 
-# 1. 讀所有分頁、合併，並加上 sheet_name 當 chapter
-xls = pd.ExcelFile(IN_XLSX)
+import pandas as pd
+import json
+from pathlib import Path
+import sys
+
+# ─── 1. 定義路徑 ─────────────────────────────────────────
+HERE    = Path(__file__).resolve().parent.parent
+QUIZ_DIR= HERE / "quiz"
+
+# 自動尋找 quiz/ 底下的 .xlsx 檔
+xlsx_list = list(QUIZ_DIR.glob("*.xlsx"))
+if not xlsx_list:
+    raise FileNotFoundError(f"找不到 .xlsx 檔於 {QUIZ_DIR}")
+IN_XLSX = xlsx_list[0]
+OUT_JSON= QUIZ_DIR / "quiz_114_parsed.json"
+
+print(f"🔎 使用 Excel：{IN_XLSX.name}", file=sys.stdout)
+
+# ─── 2. 讀所有分頁、合併並帶上章節欄 ────────────────────
+xls    = pd.ExcelFile(IN_XLSX)
 frames = []
+
 for sheet in xls.sheet_names:
     df_sheet = pd.read_excel(xls, sheet_name=sheet)
     # 清理欄名
     df_sheet.columns = [str(c).strip().replace("\n","") for c in df_sheet.columns]
     df_sheet["chapter"] = sheet
     frames.append(df_sheet)
+
 df = pd.concat(frames, ignore_index=True)
 
-import sys
-
-# 2. 列出所有欄位讓你看（會出現在 Actions log）
+# ─── 3. 列出所有欄位，抓題目欄並過濾 ────────────────────
 print("🔍 所有欄位名稱:", list(df.columns), file=sys.stdout)
 
-# 嘗試找第一個含「題」字的欄位
 try:
     question_col = next(c for c in df.columns if "題" in c)
+    print(f"✅ 偵測到題目欄: '{question_col}'", file=sys.stdout)
 except StopIteration:
-    # 如果找不到，就 fallback 用最後一個欄
+    # 如果真的找不到，就用最後一個欄
     question_col = df.columns[-1]
-    print(f"⚠️ 找不到含「題」字欄位，改用最後一個欄: '{question_col}'", file=sys.stdout)
+    print(f"⚠️ 找不到含「題」的欄位，改用: '{question_col}'", file=sys.stdout)
 
-# 3. 過濾空值、只要前 701 筆
+# 過濾掉空的題目列，並只取前 701 筆
 df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
+print(f"🔢 過濾＆取前701筆，剩 {len(df)} 筆", file=sys.stdout)
 
-# 3. 輸出 JSON：每筆都有 num/chapter/question
-# 範例：已經在 parse_excel.py 裡
+# ─── 4. 輸出 JSON ───────────────────────────────────────
 records = []
 for idx, row in df.iterrows():
     records.append({
-        "num":     idx + 1,
-        "chapter": row["chapter"],
-        "question": row[question_col],
-        # 如果你要帶出答案，也可以加：
-        # "answer": row.get("答案", "")
+        "num":      idx + 1,
+        "chapter":  row["chapter"],
+        "question": row[question_col].strip(),
+        # "answer": row.get("答案","")   # 如果要帶答案請取消註解
     })
 
 with open(OUT_JSON, "w", encoding="utf-8") as f:
     json.dump(records, f, ensure_ascii=False, indent=2)
 
-print(f"✅ 最終筆數：{len(records)}，輸出到 {OUT_JSON.name}")
+print(f"✅ 輸出 {len(records)} 筆到 {OUT_JSON.name}", file=sys.stdout)
