@@ -23,9 +23,14 @@ xls    = pd.ExcelFile(IN_XLSX)
 frames = []
 
 for sheet in xls.sheet_names:
-    df_sheet = pd.read_excel(xls, sheet_name=sheet)
-    # 清理欄名
-    df_sheet.columns = [str(c).strip().replace("\n","") for c in df_sheet.columns]
+    # 跳過前 3 行（標題、章節名稱），表頭就是「答案, 題項, 題目」
+    df_sheet = pd.read_excel(
+        xls,
+        sheet_name=sheet,
+        header=3,                # 第4列作為欄名
+        usecols="A:C",           # 只讀 A、B、C 這三欄
+        names=["answer","num","question"]  # 給三欄好記的名字
+    )
     df_sheet["chapter"] = sheet
     frames.append(df_sheet)
 
@@ -42,18 +47,18 @@ except StopIteration:
     question_col = df.columns[-1]
     print(f"⚠️ 找不到含「題」的欄位，改用: '{question_col}'", file=sys.stdout)
 
-# 過濾掉空的題目列，並只取前 701 筆
-df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
+# 3. 過濾空值 & 只取前 701 筆
+df = df[df["question"].notna()].iloc[:701].reset_index(drop=True)
 print(f"🔢 過濾＆取前701筆，剩 {len(df)} 筆", file=sys.stdout)
 
-# ─── 4. 輸出 JSON ───────────────────────────────────────
+# 4. 輸出 JSON：每筆都有欄位 answer/num/chapter/question
 records = []
 for idx, row in df.iterrows():
     records.append({
         "num":      idx + 1,
         "chapter":  row["chapter"],
-        "question": str(row[question_col]).strip(),
-        # "answer": row.get("答案","")   # 如果要帶答案請取消註解
+        "question": str(row["question"]).strip(),
+        "answer":   str(row["answer"]).strip()
     })
 
 with open(OUT_JSON, "w", encoding="utf-8") as f:
