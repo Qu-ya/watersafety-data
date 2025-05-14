@@ -1,57 +1,59 @@
+# scripts/parse_excel.py
 import pandas as pd
 import json
 from pathlib import Path
 import sys
 
-# 1. 定義路徑與檔名
-HERE = Path(__file__).resolve().parent.parent
+# ═══════════ 1. 定義路徑 ═══════════
+HERE     = Path(__file__).resolve().parent.parent
 QUIZ_DIR = HERE / "quiz"
 xlsx_list = list(QUIZ_DIR.glob("*.xlsx"))
 if not xlsx_list:
     raise FileNotFoundError(f"找不到 .xlsx 檔於 {QUIZ_DIR}")
-IN_XLSX = xlsx_list[0]
+IN_XLSX  = xlsx_list[0]
 OUT_JSON = QUIZ_DIR / "quiz_114_parsed.json"
+
 print(f"🔎 使用 Excel：{IN_XLSX.name}", file=sys.stdout)
 
-# 2. 讀取所有工作表並合併
-xls = pd.ExcelFile(IN_XLSX)
+# ═══════════ 2. 讀取所有分頁（用第二列作為欄位標題）╔═
 frames = []
-for sheet in xls.sheet_names:
-    df_sheet = pd.read_excel(xls, sheet_name=sheet)
-    # 清理欄名
-    df_sheet.columns = [str(c).strip().replace("\n", "") for c in df_sheet.columns]
-    # 設定章節欄
-    df_sheet["chapter"] = sheet
-    frames.append(df_sheet)
-
+for sheet in pd.ExcelFile(IN_XLSX).sheet_names:
+    # header=1 表示跳過第一列，第二列才當成欄位名稱
+    df = pd.read_excel(IN_XLSX, sheet_name=sheet, header=1)
+    # 清理欄位字串
+    df.columns = [str(c).strip().replace("\n", "") for c in df.columns]
+    df["chapter"] = sheet
+    frames.append(df)
 df = pd.concat(frames, ignore_index=True)
 
-# 3. 自動找欄位：答案、題號與題目
-cols = df.columns.tolist()
-print(f"🔍 所有欄位名稱: {cols}")
-try:
-    answer_col = next(c for c in cols if "答" in c)
-    question_col = next(c for c in cols if "題項" in c or ("題" in c and "題目" not in c))
-    id_col = next(c for c in cols if c not in ["chapter", answer_col, question_col])
-except StopIteration:
-    raise RuntimeError(f"無法自動找到題目/答案欄，請查看欄位: {cols}")
-print(f"⚠️ 使用欄位 -> id: '{id_col}', question: '{question_col}', answer: '{answer_col}'")
+print(f"🔍 所有欄位名稱: {list(df.columns)}", file=sys.stdout)
 
-# 4. 過濾非空題目並取前 701 筆
+# ═══════════ 3. 明確指定三個欄位 ═══════════
+id_col       = "題項"
+question_col = "題目"
+answer_col   = "答案"
+
+for col in (id_col, question_col, answer_col):
+    if col not in df.columns:
+        raise RuntimeError(f"找不到「{col}」欄位，請確認 Excel 的標題列")
+
+print(f"⚠️ 使用欄位 -> id: '{id_col}', question: '{question_col}', answer: '{answer_col}'", file=sys.stdout)
+
+# 只要前 701 筆，且題目欄不為空
 df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
 
-# 5. 輸出 JSON
+# ═══════════ 4. 組成 records 並輸出 JSON ═══════════
 records = []
-for row in df.itertuples(index=False):
-    rec = {
-        "chapter": str(getattr(row, 'chapter')).strip(),
-        "id": str(getattr(row, id_col)).strip(),
-        "question": str(getattr(row, question_col)).strip(),
-        "answer": str(getattr(row, answer_col)).strip(),
-    }
-    records.append(rec)
+for idx, row in df.iterrows():
+    records.append({
+        "num":       idx + 1,
+        "chapter":   row["chapter"],
+        "id":        str(row[id_col]).strip(),
+        "question":  str(row[question_col]).strip(),
+        "answer":    str(row[answer_col]).strip(),
+    })
 
-with open(OUT_JSON, 'w', encoding='utf-8') as f:
+with open(OUT_JSON, "w", encoding="utf-8") as f:
     json.dump(records, f, ensure_ascii=False, indent=2)
 
-print(f"✅ 最終筆數：{len(records)}，輸出到 {OUT_JSON.name}")
+print(f"✅ 最終筆數：{len(records)}，輸出到 {OUT_JSON.name}", file=sys.stdout)
