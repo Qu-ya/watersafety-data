@@ -1,8 +1,9 @@
 import pandas as pd, json
 from pathlib import Path
-
-HERE     = Path(__file__).resolve().parent.parent
-IN_XLSX  = HERE / "quiz" / "114年度救生員資格檢定學科測驗題庫.xlsx"
+qz = HERE / "quiz"
+xlsx_files = list(qz.glob("*.xlsx"))
+assert xlsx_files, "找不到任何 .xlsx"
+IN_XLSX = xlsx_files[0]
 OUT_JSON = HERE / "quiz" / "quiz_114_parsed.json"
 
 # 1. 讀所有分頁、合併，並加上 sheet_name 當 chapter
@@ -33,12 +34,15 @@ except StopIteration:
 df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
 
 # 3. 輸出 JSON：每筆都有 num/chapter/question
+# 範例：已經在 parse_excel.py 裡
 records = []
 for idx, row in df.iterrows():
     records.append({
-        "num": idx + 1,
+        "num":     idx + 1,
         "chapter": row["chapter"],
-        "question": row[question_col]
+        "question": row[question_col],
+        # 如果你要帶出答案，也可以加：
+        # "answer": row.get("答案", "")
     })
 
 with open(OUT_JSON, "w", encoding="utf-8") as f:
