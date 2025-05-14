@@ -1,19 +1,26 @@
-import io, pathlib, pdfplumber, pandas as pd, re
+# scripts/parse_quiz.py
+import json, pathlib, pdfplumber
 
-# 1. 輸入檔案路徑
-IN_PDF = pathlib.Path(__file__).parent.parent / "quiz" / "quiz_114.pdf"
+HERE     = pathlib.Path(__file__).resolve().parent.parent
+IN_PDF   = HERE / "quiz" / "114年度救生員資格檢定學科測驗題庫.pdf"
+OUT_JSON = HERE / "quiz" / "quiz_114_parsed.json"
 
-# 2. 開啟 PDF → 擷取文字
+# 1. 合併所有頁文字，去掉換行
+full = ""
 with pdfplumber.open(IN_PDF) as pdf:
-    rows = []
-    for page in pdf.pages:
-        txt = page.extract_text() or ""
-         print(txt)  # 加在這裡！
-        for n, q, ans in re.findall(r"(\d+)\.([^\n]+?)\(([ABCDOX])\)", txt):
-            # ...（跟你原本解析 row 的邏輯一樣）
-            rows.append({...})
+    for p in pdf.pages:
+        full += (p.extract_text() or "").replace("\n", "")
 
-# 3. 輸出 JSON
-OUT_JSON = IN_PDF.with_suffix(".json")
-pd.DataFrame(rows).to_json(OUT_JSON, orient="records", indent=2, force_ascii=False)
-print("Saved JSON →", OUT_JSON.name)
+# 2. 以「。」切分，每句當一題
+parts = [s.strip() for s in full.split("。") if s.strip()]
+
+# 3. 製作清單
+data = []
+for idx, txt in enumerate(parts, 1):
+    data.append({"num": idx, "question": txt + "。"})
+
+# 4. 輸出 JSON
+with open(OUT_JSON, "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+print(f"✅ Parsed {len(data)} 題到 {OUT_JSON.name}")
