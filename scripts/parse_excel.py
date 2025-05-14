@@ -16,8 +16,20 @@ for sheet in xls.sheet_names:
     frames.append(df_sheet)
 df = pd.concat(frames, ignore_index=True)
 
-# 2. 自動找第一個含「題」字的欄，過濾空值、只要前 701 筆
-question_col = next(c for c in df.columns if "題" in c)
+import sys
+
+# 2. 列出所有欄位讓你看（會出現在 Actions log）
+print("🔍 所有欄位名稱:", list(df.columns), file=sys.stdout)
+
+# 嘗試找第一個含「題」字的欄位
+try:
+    question_col = next(c for c in df.columns if "題" in c)
+except StopIteration:
+    # 如果找不到，就 fallback 用最後一個欄
+    question_col = df.columns[-1]
+    print(f"⚠️ 找不到含「題」字欄位，改用最後一個欄: '{question_col}'", file=sys.stdout)
+
+# 3. 過濾空值、只要前 701 筆
 df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
 
 # 3. 輸出 JSON：每筆都有 num/chapter/question
