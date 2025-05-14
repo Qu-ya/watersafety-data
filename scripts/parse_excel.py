@@ -1,4 +1,3 @@
-# scripts/parse_excel.py
 import pandas as pd
 import json
 from pathlib import Path
@@ -15,45 +14,48 @@ OUT_JSON = QUIZ_DIR / "quiz_114_parsed.json"
 
 print(f"🔎 使用 Excel：{IN_XLSX.name}", file=sys.stdout)
 
-# ═══════════ 2. 讀取所有分頁（用第二列作為欄位標題）╔═
+# ═══════════ 2. 讀取所有分頁（第4列作為欄位標題） ═══════════
+xlsx = pd.ExcelFile(IN_XLSX)
 frames = []
-for sheet in pd.ExcelFile(IN_XLSX).sheet_names:
-    # header=1 表示跳過第一列，第二列才當成欄位名稱
-    df = pd.read_excel(IN_XLSX, sheet_name=sheet, header=1)
-    # 清理欄位字串
-    df.columns = [str(c).strip().replace("\n", "") for c in df.columns]
+for sheet in xlsx.sheet_names:
+    df = pd.read_excel(
+        IN_XLSX,
+        sheet_name=sheet,
+        header=3,        # 從第4列當欄位名稱 (0-based: 3)
+        usecols="A:C", # 抓 A=答案, B=題項, C=題目 三欄
+        dtype=str        # 全部讀成 str，避免數字轉 int
+    )
+    # 確保欄名正確
+    df.columns = ["答案", "題項", "題目"]
+    # 加上章節資訊
     df["chapter"] = sheet
     frames.append(df)
-df = pd.concat(frames, ignore_index=True)
 
+# 合併所有分頁
+df = pd.concat(frames, ignore_index=True)
 print(f"🔍 所有欄位名稱: {list(df.columns)}", file=sys.stdout)
 
-# ═══════════ 3. 明確指定三個欄位 ═══════════
-id_col       = "題項"
-question_col = "題目"
-answer_col   = "答案"
-
-for col in (id_col, question_col, answer_col):
+# ═══════════ 3. 檢查欄位並取前701筆 ═══════════
+required = ["題項", "題目", "答案"]
+for col in required:
     if col not in df.columns:
-        raise RuntimeError(f"找不到「{col}」欄位，請確認 Excel 的標題列")
+        raise RuntimeError(f"找不到「{col}」欄位，請確認 Excel 的第4列是否正確")
+print(f"⚠️ 使用欄位 -> id: '題項', question: '題目', answer: '答案'", file=sys.stdout)
 
-print(f"⚠️ 使用欄位 -> id: '{id_col}', question: '{question_col}', answer: '{answer_col}'", file=sys.stdout)
-
-# 只要前 701 筆，且題目欄不為空
-df = df[df[question_col].notna()].iloc[:701].reset_index(drop=True)
+# 過濾空題目並取前701筆
+df = df[df["題目"].notna()].iloc[:701].reset_index(drop=True)
 
 # ═══════════ 4. 組成 records 並輸出 JSON ═══════════
 records = []
 for idx, row in df.iterrows():
     records.append({
-        "num":       idx + 1,
-        "chapter":   row["chapter"],
-        "id":        str(row[id_col]).strip(),
-        "question":  str(row[question_col]).strip(),
-        "answer":    str(row[answer_col]).strip(),
+        "num":      idx + 1,
+        "chapter":  row["chapter"],
+        "id":       row["題項"].strip(),
+        "question": row["題目"].strip(),
+        "answer":   row["答案"].strip(),
     })
 
 with open(OUT_JSON, "w", encoding="utf-8") as f:
     json.dump(records, f, ensure_ascii=False, indent=2)
-
 print(f"✅ 最終筆數：{len(records)}，輸出到 {OUT_JSON.name}", file=sys.stdout)
