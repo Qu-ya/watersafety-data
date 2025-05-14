@@ -9,7 +9,14 @@ IN_XLSX = HERE / "quiz" / "114年度救生員資格檢定學科測驗題庫.xlsx
 OUT_JSON= HERE / "quiz" / "quiz_114_parsed.json"
 
 # 2. 讀 Excel（第一筆是標題）
-df = pd.read_excel(IN_XLSX)
+# 讀所有工作表並合併
+xls = pd.ExcelFile(IN_XLSX)
+frames = []
+for sheet in xls.sheet_names:
+    df_sheet = pd.read_excel(xls, sheet_name=sheet)
+    frames.append(df_sheet)
+df = pd.concat(frames, ignore_index=True)
+
 
 # 3. 檢查筆數
 total = len(df)
