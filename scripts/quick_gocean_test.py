@@ -5,7 +5,7 @@ url = "https://goocean.namr.gov.tw/Main/GetPageData"
 
 payload = {
     "time":      "2025051902",
-    "type":      "waveHeight,wind,waterTemp,riskLevel,sports-classification",
+    "type":      "sports-classification,riskLevel",
     "action":    "12",
     "ValueMode": "t3",
 }
