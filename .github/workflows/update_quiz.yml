@@ -4,9 +4,9 @@ permissions:
 name: auto-update-quiz
 
 on:
-  workflow_dispatch:    # 手動觸發
+  workflow_dispatch: # 手動觸發
   schedule:
-    - cron: "0 2 * * *" # 每天台北時間 10:00（UTC02:00）自動跑
+    - cron: "0 2 * * *" # 每天台北時間 10:00 (UTC+02:00) 自動跑
 
 jobs:
   build:
