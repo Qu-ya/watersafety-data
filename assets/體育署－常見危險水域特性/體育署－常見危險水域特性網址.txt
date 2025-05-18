@@ -1,1 +1,14 @@
-https://watersafety.sa.gov.tw/archives/5149
+# 資料來源
+主文頁面：https://watersafety.sa.gov.tw/archives/5149
+網站名稱：學生水域安全網-常見危險水域特性
+
+# 圖片清單
+分辨離岸流1：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/3-1.jpg
+分辨離岸流2：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/4-1.jpg
+意外落水自救1：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/11-1.jpg
+意外落水自救2：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/12-1.jpg
+瀑布逃生1：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/8-1.jpg
+瀑布逃生2：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/9-1.jpg
+瀑布逃生3：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/10-1.jpg
+離岸流自救：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/6-1.jpg
+離岸流－錯誤自救：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/5-1.jpg
