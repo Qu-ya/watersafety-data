@@ -1,1 +1,8 @@
-https://watersafety.sa.gov.tw/home/%e6%b0%b4%e5%ae%89%e5%ae%a3%e5%b0%8e%e6%96%87%e5%ae%a3
+# 資料來源
+主文頁面：https://watersafety.sa.gov.tw/home/%e6%b0%b4%e5%ae%89%e5%ae%a3%e5%b0%8e%e6%96%87%e5%ae%a3
+網站名稱：學生水域安全網-水安宣導文宣
+
+# 圖片清單
+新版防溺十招1：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/LINE_P20180613_104546821-2000x2829.jpg
+新版防溺十招2：https://watersafety.sa.gov.tw/wp-content/uploads/2018/06/LINE_P20180613_104546832-2000x2829.jpg
+109年水安宣導海報：https://watersafety.sa.gov.tw/wp-content/uploads/2020/10/109%E5%B9%B4%E7%89%88%E6%B5%B7%E5%A0%B1.jpg
