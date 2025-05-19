@@ -2,8 +2,8 @@ name: Fetch CWB Weather
 
 on:
   schedule:
-    # 每小時整點跑一次；之後再視需求調整
-    - cron: '0 * * * *'
+    # 每 6 小時抓一次
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -16,16 +16,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 安裝 requests 套件
+      - name: Install Python dependencies
         run: pip install requests
 
-      - name: 執行 CWB 天氣抓取腳本
+      - name: Run fetch script
         run: python scripts/fetch_cwb_weather.py
 
       - name: Commit & push
         run: |
           git config --global user.email "bot@example.com"
-          git config --global user.name  "auto-bot"
+          git config --global user.name "auto-bot"
           git add quiz/weather_live.json
           git commit -m "chore: update CWB weather" || echo "no change"
           git push
