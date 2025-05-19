@@ -16,7 +16,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run fetch script
+      - name: 安裝 requests 套件
+        run: pip install requests
+
+      - name: 執行 CWB 天氣抓取腳本
         run: python scripts/fetch_cwb_weather.py
 
       - name: Commit & push
