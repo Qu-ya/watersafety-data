@@ -1,9 +1,9 @@
 name: Fetch CWB Weather
 
 on:
+  workflow_dispatch:
   schedule:
-    # 每 6 小時執行一次（UTC 時間 0、6、12、18 點）
-    - cron: '0 */6 * * *'
+    - cron:  '0 */6 * * *'   # 每 6 小時的整點執行一次
   workflow_dispatch:   # 保留！想手動跑還是可以
 
 jobs:
