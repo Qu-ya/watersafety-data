@@ -1,0 +1,9 @@
+{
+  "timestamp": 1747687744,
+  "location": "臺北市",
+  "weather": "晴午後短暫雷陣雨",
+  "pop_12h_pct": "50",
+  "temp_min_C": "25",
+  "temp_max_C": "34",
+  "source_url": "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=臺北市&format=JSON&Authorization=CWA-EB2287E3-031A-4CA0-AD2D-60F1E40769FE"
+}
