@@ -1,0 +1,28 @@
+name: Fetch CWB weather
+
+on:
+  schedule:
+    # 每 6 小時跑一次；UTC 時區 → 台灣時間大約 +8
+    - cron:  '0 */6 * * *'
+  workflow_dispatch:      # 手動觸發也可以
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run fetch script
+        run: python scripts/fetch_cwb_weather.py
+
+      - name: Commit & push
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name  "auto-bot"
+          git add quiz/weather_live.json
+          git commit -m "chore: update CWB weather" || echo "no change"
+          git push
