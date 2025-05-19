@@ -1,10 +1,10 @@
-name: Fetch CWB weather
+name: Fetch CWB Weather
 
 on:
   schedule:
-    # 每 6 小時跑一次；UTC 時區 → 台灣時間大約 +8
-    - cron:  '0 */6 * * *'
-  workflow_dispatch:      # 手動觸發也可以
+    # 每小時整點跑一次；之後再視需求調整
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
