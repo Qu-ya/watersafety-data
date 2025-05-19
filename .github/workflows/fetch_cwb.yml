@@ -3,7 +3,7 @@ name: Fetch CWB Weather
 on:
   workflow_dispatch: {}      # 手動觸發保留
   schedule:                  # 自動排程
-    - cron: '*/5 * * * *'    # 每 6 小時的整點執行一次
+    - cron: '* */6 * * *'    # 每 6 小時的整點執行一次
           # 分 時 日 月 星期  (cron 語法)
 
 jobs:
