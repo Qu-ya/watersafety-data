@@ -1,26 +1,22 @@
 name: Fetch CWB Weather
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron:  '0 */6 * * *'   # 每 6 小時的整點執行一次
-  workflow_dispatch:   # 保留！想手動跑還是可以
+  workflow_dispatch: {}      # 手動觸發保留
+  schedule:                  # 自動排程
+    - cron: '0 */6 * * *'    # 每 6 小時的整點執行一次
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # ➊ 這裡把 Secrets 帶進來
     env:
       CWB_API_KEY: ${{ secrets.CWB_API_KEY }}
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install requests            # ➋ 安裝 requests
+      - name: Install requests
         run: pip install requests
 
       - name: Run fetch script
