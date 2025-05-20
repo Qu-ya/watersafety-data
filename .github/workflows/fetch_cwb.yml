@@ -1,32 +1,48 @@
 name: Fetch CWB Weather
 
 on:
-  workflow_dispatch: {}      # 手動觸發保留
-  schedule:                  # 自動排程
-    - cron: '* */6 * * *'    # 每 6 小時的整點執行一次
-          # 分 時 日 月 星期  (cron 語法)
+  workflow_dispatch: {}          # 手動觸發，保留
+  schedule:                      # 自動排程
+    # ┌ 分 ─ 0 分
+    # │ ┌ 時 ─ 每 6 小時一次 (0,6,12,18)
+    # │ │ ┌ 日
+    # │ │ │ ┌ 月
+    # │ │ │ │ ┌ 星期
+    # │ │ │ │ │
+    - cron: "0 */6 * * *"
+
+permissions:
+  contents: write                # 允許把變更 push 回 repo
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       CWB_API_KEY: ${{ secrets.CWB_API_KEY }}
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Install requests
+      - name: Install dependencies
         run: pip install requests
 
       - name: Run fetch script
         run: python scripts/fetch_cwb_weather.py
 
-      - name: Commit & push
+      - name: Commit & push updated JSON
         run: |
-          git config --global user.email "bot@example.com"
-          git config --global user.name "auto-bot"
-          git add quiz/weather_live.json
-          git commit -m "chore: update CWB weather" || echo "no change"
-          git push
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 若檔案內容沒變則不 commit
+          if git diff --quiet quiz/weather_live.json; then
+            echo "No changes in weather_live.json"
+          else
+            git add quiz/weather_live.json
+            git commit -m "chore: update weather_live.json ($(date -u +'%Y-%m-%dT%H:%MZ'))"
+            git push origin HEAD:main
+          fi
