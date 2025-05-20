@@ -1,57 +1,62 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-抓取中央氣象署 3 小時逐時預報（F-C0032-001）
-* 只取「臺北市」示範
-* 萃取：氣溫（T）、10 分鐘平均風速（WS）、6 小時降雨機率（PoP6h）
-* 存成 quiz/weather_live.json
+抓取中央氣象署 F-C0032-001 今明 36 小時預報
+* 一次抓 22 個縣市
+* 萃取：天氣現象(Wx)、12h降雨機率(PoP)、最低溫(MinT)、最高溫(MaxT)
+* 存成 quiz/weather_live.json（dict 以城市為 key，GPT 讀檔後再依需要篩選）
 """
 
 import json, os, time, requests
 from pathlib import Path
 
-API_KEY = os.environ["CWB_API_KEY"]              # ← 來自 Secrets
+# 22 個縣市（順序可自訂，名稱須與氣象局資料一致）
+CITIES = [
+    "基隆市","臺北市","新北市","桃園市","新竹市","新竹縣",
+    "苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市",
+    "嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣",
+    "臺東縣","澎湖縣","金門縣","連江縣"
+]
+
+API_KEY = os.environ["CWB_API_KEY"]
 URL = (
     "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001"
-    "?locationName=臺北市"
+    f"?locationName={','.join(CITIES)}"
     "&format=JSON"
     f"&Authorization={API_KEY}"
 )
 
 OUT = Path(__file__).resolve().parent.parent / "quiz" / "weather_live.json"
 
+def _pick(elem_list, code: str) -> str:
+    """從 weatherElement 中找出指定 elementName 的第一筆參數值"""
+    return next(e for e in elem_list if e["elementName"] == code)["time"][0]["parameter"]["parameterName"]
+
 def main() -> None:
     r = requests.get(URL, timeout=10)
     r.raise_for_status()
     data = r.json()
-    # --- DEBUG 先看看有哪些欄位 ---
-    #for e in data["records"]["location"][0]["weatherElement"]:
-    #    print("→", e["elementName"])
-    #quit()        # 列完就先結束程式
-    # ---------------------------------
 
+    weather_dict = {}
+    for loc in data["records"]["location"]:
+        name = loc["locationName"]
+        el   = loc["weatherElement"]
+        weather_dict[name] = {
+            "weather"     : _pick(el, "Wx"),
+            "pop_12h_pct" : _pick(el, "PoP"),
+            "temp_min_C"  : _pick(el, "MinT"),
+            "temp_max_C"  : _pick(el, "MaxT"),
+        }
 
-    el = data["records"]["location"][0]["weatherElement"]
-
-    # 取三個欄位（T, WS, PoP6h）
-    get_val = lambda elem_code: next(
-        e for e in el if e["elementName"] == elem_code
-    )["time"][0]["parameter"]["parameterName"]    # ← parameter 裡面的 parameterName
-    
-    out = {
-        "timestamp"   : int(time.time()),
-        "location"    : "臺北市",
-        "weather"     : get_val("Wx"),      # 天氣現象文字
-        "pop_12h_pct" : get_val("PoP"),     # 12 小時降雨機率 %
-        "temp_min_C"  : get_val("MinT"),    # 最低溫
-        "temp_max_C"  : get_val("MaxT"),    # 最高溫
-        "source_url"  : URL,
+    out_json = {
+        "timestamp" : int(time.time()),
+        "source_url": URL,
+        "cities"    : weather_dict
     }
 
-
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"✅ 已寫入 {OUT}\n", json.dumps(out, ensure_ascii=False, indent=2))
+    OUT.write_text(json.dumps(out_json, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"✅ 已寫入 {OUT}")
 
 if __name__ == "__main__":
     main()
