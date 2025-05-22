@@ -2,13 +2,8 @@ name: Fetch CWB Weather
 
 on:
   workflow_dispatch: {}          # 手動觸發，保留
-  schedule:                      # 自動排程
-    # ┌ 分 ─ 0 分
-    # │ ┌ 時 ─ 每 6 小時一次 (0,6,12,18)
-    # │ │ ┌ 日
-    # │ │ │ ┌ 月
-    # │ │ │ │ ┌ 星期
-    # │ │ │ │ │
+  schedule:                      # 自動排程       
+    #       分 時 日 月 星期
     - cron: "0 */6 * * *"
 
 permissions:
@@ -38,7 +33,6 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 若檔案內容沒變則不 commit
           if git diff --quiet quiz/weather_live.json; then
             echo "No changes in weather_live.json"
           else

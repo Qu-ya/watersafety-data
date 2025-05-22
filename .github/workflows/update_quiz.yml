@@ -6,7 +6,7 @@ name: auto-update-quiz
 on:
   workflow_dispatch: # 手動觸發
   schedule:
-    - cron: "0 2 * * *" # 每天台北時間 10:00 (UTC+02:00) 自動跑
+    - cron: "0 2 1 3 *" # 每年 3 月 1 日早上 10 點（台灣時間；UTC 時間凌晨 2 點）
 
 jobs:
   build:
