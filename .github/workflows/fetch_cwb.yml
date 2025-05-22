@@ -3,7 +3,7 @@ name: Fetch CWB Weather
 on:
   workflow_dispatch: {}          # 手動觸發，保留
   schedule:                      # 自動排程       
-    #       分 時 日 月 星期
+    #       分  時 日 月 星期
     - cron: "0 */6 * * *"
 
 permissions:
