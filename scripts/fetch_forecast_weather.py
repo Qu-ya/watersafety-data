@@ -29,7 +29,14 @@ def main():
         raise RuntimeError(f"CWB API 回傳失敗: {data}")
 
     weather_dict = {}
-    for loc in data["records"]["locations"][0]["location"]:
+    recs = data["records"]
+    if "locations" in recs:                    # 舊版
+        loc_list = recs["locations"][0]["location"]
+    else:                                      # 新版
+        loc_list = recs["location"]
+
+    for loc in loc_list:
+
         name = loc["locationName"]
         el = loc["weatherElement"]
         weather_dict[name] = {
