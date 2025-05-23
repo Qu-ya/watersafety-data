@@ -25,6 +25,13 @@ def main():
     r.raise_for_status()
     data = r.json()
 
+    # debug開始: 印出 records 的 key 與前 500 字，然後結束
+    import sys
+    print("DEBUG records keys:", list(data["records"].keys()), file=sys.stderr)
+    print(json.dumps(data["records"], ensure_ascii=False)[:500], file=sys.stderr)
+    sys.exit(0)
+    # === DEBUG 結束 ===
+
     if data.get("success") != "true":
         raise RuntimeError(f"CWB API 回傳失敗: {data}")
 
