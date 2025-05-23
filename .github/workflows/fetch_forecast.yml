@@ -1,0 +1,36 @@
+name: Fetch Forecast Weather
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # 每 6 小時更新一次
+  workflow_dispatch: {}    # 可手動觸發
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run forecast fetch script
+        run: python scripts/fetch_forecast_weather.py
+
+      - name: Commit forecast data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet quiz/forecast_weather.json; then
+            echo "✅ No change in forecast"
+          else
+            git add quiz/forecast_weather.json
+            git commit -m "chore: update forecast_weather.json"
+            git push origin HEAD:main
+          fi
