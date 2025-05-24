@@ -73,13 +73,27 @@ def main():
         raise RuntimeError(f"找不到任何 Location 清單，keys={list(recs.keys())}")
 
     for loc in loc_list:
-            # === DEBUG: 觀察 ElementValue 裡的鍵名，貼完就 sys.exit ===
+        name    = loc.get("locationName") or loc.get("LocationName")
         el_list = loc.get("weatherElement") or loc.get("WeatherElement")
-        first_time = el_list[0].get("time") or el_list[0].get("Time")
-        first_elv  = first_time[0].get("parameter") or first_time[0].get("ElementValue")
-        import sys
-        print("DEBUG ElementValue keys:", list(first_elv[0].keys()), file=sys.stderr)
-        sys.exit(0)
+
+        # 找出各元素
+        temp_elem = next(e for e in el_list if (e.get("elementName") or e.get("ElementName")) == "溫度")
+        rain_elem = next(e for e in el_list if (e.get("elementName") or e.get("ElementName")) == "3小時降雨機率")
+        wx_elem   = next(e for e in el_list if (e.get("elementName") or e.get("ElementName")) == "天氣現象")
+
+        # 取第一筆預報時間的 ElementValue
+        get_val = lambda elem, key: (
+            (elem.get("Time") or elem.get("time"))[0]
+            .get("ElementValue", elem.get("time")[0].get("parameter"))[0]
+            .get(key)
+        )
+
+        weather_dict[name] = {
+            "forecast_weather": get_val(wx_elem,   "Wx"),
+            "rain_pct"       : get_val(rain_elem, "PoP"),
+            "min_temp"       : get_val(temp_elem, "MinT")  or get_val(temp_elem, "Temperature"),
+            "max_temp"       : get_val(temp_elem, "MaxT")  or get_val(temp_elem, "Temperature"),
+        }
 
         weather_dict[name] = {
             "forecast_weather": _pick(el_list, "Wx"),
