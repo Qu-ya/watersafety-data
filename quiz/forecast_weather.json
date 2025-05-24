@@ -1,0 +1,138 @@
+{
+  "timestamp": 1748091130,
+  "source_url": "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWA-EB2287E3-031A-4CA0-AD2D-60F1E40769FE&format=JSON",
+  "cities": {
+    "連江縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "23",
+      "max_temp": "23"
+    },
+    "金門縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "25",
+      "max_temp": "25"
+    },
+    "宜蘭縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "新竹縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "苗栗縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "彰化縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "28",
+      "max_temp": "28"
+    },
+    "南投縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "雲林縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "嘉義縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "屏東縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "32",
+      "max_temp": "32"
+    },
+    "臺東縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "花蓮縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "27",
+      "max_temp": "27"
+    },
+    "澎湖縣": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "26",
+      "max_temp": "26"
+    },
+    "基隆市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "23",
+      "max_temp": "23"
+    },
+    "新竹市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "嘉義市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "臺北市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "高雄市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "30",
+      "max_temp": "30"
+    },
+    "新北市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "臺中市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "28",
+      "max_temp": "28"
+    },
+    "臺南市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "29",
+      "max_temp": "29"
+    },
+    "桃園市": {
+      "forecast_weather": "",
+      "rain_pct": "",
+      "min_temp": "23",
+      "max_temp": "23"
+    }
+  }
+}
