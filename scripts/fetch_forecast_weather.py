@@ -73,15 +73,12 @@ def main():
         raise RuntimeError(f"找不到任何 Location 清單，keys={list(recs.keys())}")
 
     for loc in loc_list:
-        # 先抓第一個地點的 elementName 列表，用來觀察有哪些欄位
+            # === DEBUG: 觀察 ElementValue 裡的鍵名，貼完就 sys.exit ===
         el_list = loc.get("weatherElement") or loc.get("WeatherElement")
+        first_time = el_list[0].get("time") or el_list[0].get("Time")
+        first_elv  = first_time[0].get("parameter") or first_time[0].get("ElementValue")
         import sys
-        # 列印所有 elementName（同時支援大寫/小寫）
-        names = [e.get("elementName") or e.get("ElementName") for e in el_list]
-        print("DEBUG elementName list:", names, file=sys.stderr)
-        # 印出第一筆時間資料（用來確認子欄位 keys）
-        first = el_list[0].get("time") or el_list[0].get("Time")
-        print("DEBUG first time entry keys:", list(first[0].keys()), file=sys.stderr)
+        print("DEBUG ElementValue keys:", list(first_elv[0].keys()), file=sys.stderr)
         sys.exit(0)
 
         weather_dict[name] = {
