@@ -1,138 +1,138 @@
 {
-  "timestamp": 1748134392,
+  "timestamp": 1748153561,
   "source_url": "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?locationName=基隆市,臺北市,新北市,桃園市,新竹市,新竹縣,苗栗縣,臺中市,彰化縣,南投縣,雲林縣,嘉義市,嘉義縣,臺南市,高雄市,屏東縣,宜蘭縣,花蓮縣,臺東縣,澎湖縣,金門縣,連江縣&format=JSON&Authorization=CWA-EB2287E3-031A-4CA0-AD2D-60F1E40769FE",
   "cities": {
     "嘉義縣": {
       "weather": "多雲時陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
-      "temp_min_C": "23",
-      "temp_max_C": "28"
+      "temp_min_C": "26",
+      "temp_max_C": "29"
     },
     "新北市": {
-      "weather": "陰時多雲短暫陣雨",
+      "weather": "陰短暫陣雨",
       "pop_12h_pct": "80",
-      "temp_min_C": "22",
-      "temp_max_C": "23"
+      "temp_min_C": "19",
+      "temp_max_C": "20"
     },
     "嘉義市": {
       "weather": "多雲時陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
-      "temp_min_C": "23",
-      "temp_max_C": "28"
+      "temp_min_C": "26",
+      "temp_max_C": "29"
     },
     "新竹縣": {
-      "weather": "多雲短暫陣雨",
-      "pop_12h_pct": "60",
-      "temp_min_C": "21",
-      "temp_max_C": "23"
+      "weather": "陰短暫陣雨",
+      "pop_12h_pct": "80",
+      "temp_min_C": "19",
+      "temp_max_C": "20"
     },
     "新竹市": {
-      "weather": "多雲短暫陣雨",
-      "pop_12h_pct": "60",
-      "temp_min_C": "21",
-      "temp_max_C": "23"
+      "weather": "陰短暫陣雨",
+      "pop_12h_pct": "70",
+      "temp_min_C": "19",
+      "temp_max_C": "20"
     },
     "臺北市": {
-      "weather": "陰時多雲短暫陣雨",
-      "pop_12h_pct": "70",
-      "temp_min_C": "22",
-      "temp_max_C": "23"
+      "weather": "陰短暫陣雨",
+      "pop_12h_pct": "60",
+      "temp_min_C": "20",
+      "temp_max_C": "20"
     },
     "臺南市": {
-      "weather": "多雲短暫陣雨或雷雨",
-      "pop_12h_pct": "30",
-      "temp_min_C": "25",
-      "temp_max_C": "30"
+      "weather": "多雲",
+      "pop_12h_pct": "20",
+      "temp_min_C": "28",
+      "temp_max_C": "31"
     },
     "宜蘭縣": {
       "weather": "陰短暫陣雨",
-      "pop_12h_pct": "30",
-      "temp_min_C": "22",
-      "temp_max_C": "23"
+      "pop_12h_pct": "40",
+      "temp_min_C": "20",
+      "temp_max_C": "20"
     },
     "苗栗縣": {
-      "weather": "多雲時陰短暫陣雨",
-      "pop_12h_pct": "60",
+      "weather": "陰短暫陣雨",
+      "pop_12h_pct": "70",
       "temp_min_C": "21",
-      "temp_max_C": "24"
+      "temp_max_C": "22"
     },
     "雲林縣": {
-      "weather": "陰短暫陣雨或雷雨",
-      "pop_12h_pct": "40",
-      "temp_min_C": "23",
-      "temp_max_C": "27"
+      "weather": "多雲時陰短暫陣雨或雷雨",
+      "pop_12h_pct": "30",
+      "temp_min_C": "24",
+      "temp_max_C": "26"
     },
     "花蓮縣": {
-      "weather": "陰短暫陣雨",
+      "weather": "陰天",
+      "pop_12h_pct": "20",
+      "temp_min_C": "21",
+      "temp_max_C": "22"
+    },
+    "臺中市": {
+      "weather": "陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
       "temp_min_C": "23",
       "temp_max_C": "25"
-    },
-    "臺中市": {
-      "weather": "陰時多雲短暫陣雨或雷雨",
-      "pop_12h_pct": "40",
-      "temp_min_C": "23",
-      "temp_max_C": "26"
     },
     "臺東縣": {
       "weather": "陰短暫陣雨",
       "pop_12h_pct": "40",
-      "temp_min_C": "25",
-      "temp_max_C": "28"
+      "temp_min_C": "24",
+      "temp_max_C": "26"
     },
     "桃園市": {
-      "weather": "多雲時陰短暫陣雨",
+      "weather": "陰短暫陣雨",
       "pop_12h_pct": "80",
-      "temp_min_C": "21",
-      "temp_max_C": "22"
+      "temp_min_C": "19",
+      "temp_max_C": "20"
     },
     "南投縣": {
       "weather": "陰短暫陣雨或雷雨",
-      "pop_12h_pct": "50",
-      "temp_min_C": "23",
-      "temp_max_C": "27"
+      "pop_12h_pct": "30",
+      "temp_min_C": "24",
+      "temp_max_C": "26"
     },
     "高雄市": {
       "weather": "多雲時陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
-      "temp_min_C": "26",
-      "temp_max_C": "30"
+      "temp_min_C": "29",
+      "temp_max_C": "31"
     },
     "金門縣": {
-      "weather": "陰時多雲短暫陣雨",
+      "weather": "陰短暫陣雨",
       "pop_12h_pct": "30",
-      "temp_min_C": "22",
-      "temp_max_C": "26"
+      "temp_min_C": "21",
+      "temp_max_C": "25"
     },
     "屏東縣": {
       "weather": "多雲時陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
-      "temp_min_C": "26",
-      "temp_max_C": "31"
+      "temp_min_C": "30",
+      "temp_max_C": "33"
     },
     "基隆市": {
-      "weather": "陰時多雲短暫陣雨",
-      "pop_12h_pct": "60",
-      "temp_min_C": "21",
-      "temp_max_C": "24"
+      "weather": "陰短暫陣雨",
+      "pop_12h_pct": "40",
+      "temp_min_C": "20",
+      "temp_max_C": "20"
     },
     "澎湖縣": {
-      "weather": "多雲短暫陣雨",
-      "pop_12h_pct": "30",
+      "weather": "多雲",
+      "pop_12h_pct": "20",
       "temp_min_C": "24",
       "temp_max_C": "27"
     },
     "彰化縣": {
-      "weather": "陰時多雲短暫陣雨或雷雨",
+      "weather": "陰短暫陣雨或雷雨",
       "pop_12h_pct": "30",
       "temp_min_C": "23",
-      "temp_max_C": "26"
+      "temp_max_C": "25"
     },
     "連江縣": {
-      "weather": "多雲時陰短暫陣雨",
-      "pop_12h_pct": "30",
-      "temp_min_C": "22",
-      "temp_max_C": "25"
+      "weather": "陰天",
+      "pop_12h_pct": "20",
+      "temp_min_C": "21",
+      "temp_max_C": "23"
     }
   }
 }
