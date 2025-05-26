@@ -34,7 +34,9 @@ def _fetch() -> dict:
 
     # success 但 records 是 "" ＝ 沒授權或流量超限
     if not d.get("records"):
-        err = d.get("result", {}).get("message", "records 是空字串")
+        #err = d.get("result", {}).get("message", "records 是空字串")
+        # ★ 把官方訊息印出，再丟錯
+        msg = d.get("result", {}).get("message", "records 空字串")
         raise RuntimeError(f"❗ CWA 回傳空資料：{err}\n請到後台勾選 F-D0047-089 或檢查流量額度")
     return d
 
