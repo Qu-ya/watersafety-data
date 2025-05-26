@@ -11,7 +11,12 @@ from pathlib import Path
 # ═════ 1. 基本設定 ═════
 API_KEY  = os.environ["CWB_API_KEY"]
 BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091"
-PARAMS   = {"Authorization": API_KEY, "format": "JSON"}
+PARAMS = {
+    "Authorization": API_KEY,
+    "format": "JSON",
+    # ↓ 想抓哪些城市就填哪些，逗號分隔，空字串代表全部（需授權）
+    "locationName": "基隆市,臺北市,新北市,桃園市,新竹市,新竹縣,苗栗縣,臺中市,彰化縣,南投縣,雲林縣,嘉義市,嘉義縣,臺南市,高雄市,屏東縣,宜蘭縣,花蓮縣,臺東縣,澎湖縣,金門縣,連江縣"
+}
 OUT_PATH = Path(__file__).resolve().parent.parent / "quiz" / "forecast_weather.json"
 
 ELEMS = {
