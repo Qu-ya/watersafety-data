@@ -9,7 +9,7 @@ import os, json, time, requests
 from pathlib import Path
 
 API_KEY  = os.environ["CWB_API_KEY"]
-BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-089"
+BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091"
 PARAMS   = {"Authorization": API_KEY, "format": "JSON"}
 OUT_PATH = Path(__file__).resolve().parent.parent / "quiz" / "forecast_weather.json"
 
@@ -31,7 +31,7 @@ def _fetch() -> dict:
     r.raise_for_status()
     d = r.json()
     if d.get("success") != "true":
-        raise RuntimeError(f"CWB API failure: {d}")
+        raise RuntimeError(f"CWB API failure: {d.get('result', {}).get('message', d)}")
     return d
 
 # ---------- 解析 ----------
