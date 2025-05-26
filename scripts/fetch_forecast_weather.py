@@ -45,14 +45,15 @@ def _parse(raw: dict) -> dict:
     if not isinstance(container, dict):
         raise RuntimeError("❗ API 未回傳合法 locations 欄位，請檢查金鑰與參數")
 
-    city_arr = _safe(container, "location", [])
+    city_arr = _safe(container, "location", []) or _safe(container, "Location", [])
     if not city_arr:
-        raise RuntimeError("❗ API 未傳回任何城市資料")
+        raise RuntimeError("❗ API 雖有 locations，但底下無 city 資料—請檢查大小寫或權限")
 
     # ② 組裝
     result = {}
     for city in city_arr:
-        name  = _safe(city, "locationName").strip()
+        name  = _safe(city, "locationName") or _safe(city, "LocationName")
+        name  = (name or "").strip()
         elems = _safe(city, "weatherElement", [])
         elem_map = { _safe(e, "elementName"): e
                      for e in elems if _safe(e, "elementName") in ELEMS }
