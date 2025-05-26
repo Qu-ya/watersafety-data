@@ -1,5 +1,3 @@
-# 1️⃣  用這段 HERE-DOC 覆蓋檔案內容
-cat > scripts/fetch_forecast_weather.py <<"EOF"
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -92,4 +90,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
