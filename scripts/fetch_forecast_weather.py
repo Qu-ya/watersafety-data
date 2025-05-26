@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-抓中央氣象署 F-D0047-091（臺灣未來 1 週天氣預報）
+抓中央氣象署 F-D0047-089（臺灣未來 1 週天氣預報）
 輸出 quiz/forecast_weather.json
 """
 
@@ -10,7 +10,7 @@ from pathlib import Path
 
 # ═════ 1. 基本設定 ═════
 API_KEY  = os.environ["CWB_API_KEY"]
-BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091"
+BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-089"
 PARAMS = {
     "Authorization": API_KEY,
     "format": "JSON",
