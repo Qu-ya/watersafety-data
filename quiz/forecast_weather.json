@@ -1,12 +1,12 @@
 {
-  "timestamp": 1748197173,
+  "timestamp": 1748222255,
   "source_url": "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWA-EB2287E3-031A-4CA0-AD2D-60F1E40769FE&format=JSON",
   "cities": {
     "連江縣": {
-      "forecast_weather": "短暫陣雨",
-      "rain_pct": "30",
-      "min_temp": "20",
-      "max_temp": "20"
+      "forecast_weather": "陰",
+      "rain_pct": "20",
+      "min_temp": "21",
+      "max_temp": "21"
     },
     "金門縣": {
       "forecast_weather": "陰",
@@ -15,28 +15,28 @@
       "max_temp": "20"
     },
     "宜蘭縣": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
+      "forecast_weather": "短暫陣雨",
+      "rain_pct": "50",
       "min_temp": "20",
       "max_temp": "20"
     },
     "新竹縣": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
       "min_temp": "20",
       "max_temp": "20"
     },
     "苗栗縣": {
-      "forecast_weather": "短暫陣雨",
-      "rain_pct": "30",
-      "min_temp": "19",
-      "max_temp": "19"
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
+      "min_temp": "20",
+      "max_temp": "20"
     },
     "彰化縣": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
-      "min_temp": "21",
-      "max_temp": "21"
+      "forecast_weather": "短暫陣雨",
+      "rain_pct": "30",
+      "min_temp": "22",
+      "max_temp": "22"
     },
     "南投縣": {
       "forecast_weather": "陰",
@@ -57,10 +57,10 @@
       "max_temp": "22"
     },
     "屏東縣": {
-      "forecast_weather": "陰",
+      "forecast_weather": "多雲",
       "rain_pct": "20",
-      "min_temp": "26",
-      "max_temp": "26"
+      "min_temp": "24",
+      "max_temp": "24"
     },
     "臺東縣": {
       "forecast_weather": "陰",
@@ -81,14 +81,14 @@
       "max_temp": "23"
     },
     "基隆市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
-      "min_temp": "20",
-      "max_temp": "20"
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
+      "min_temp": "21",
+      "max_temp": "21"
     },
     "新竹市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
       "min_temp": "20",
       "max_temp": "20"
     },
@@ -99,40 +99,40 @@
       "max_temp": "22"
     },
     "臺北市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
-      "min_temp": "20",
-      "max_temp": "20"
-    },
-    "高雄市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
-      "min_temp": "27",
-      "max_temp": "27"
-    },
-    "新北市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
-      "min_temp": "20",
-      "max_temp": "20"
-    },
-    "臺中市": {
-      "forecast_weather": "陰",
-      "rain_pct": "20",
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
       "min_temp": "21",
       "max_temp": "21"
     },
-    "臺南市": {
+    "高雄市": {
       "forecast_weather": "陰",
       "rain_pct": "20",
       "min_temp": "25",
       "max_temp": "25"
     },
-    "桃園市": {
+    "新北市": {
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
+      "min_temp": "21",
+      "max_temp": "21"
+    },
+    "臺中市": {
       "forecast_weather": "短暫陣雨",
       "rain_pct": "30",
-      "min_temp": "19",
-      "max_temp": "19"
+      "min_temp": "22",
+      "max_temp": "22"
+    },
+    "臺南市": {
+      "forecast_weather": "多雲",
+      "rain_pct": "20",
+      "min_temp": "24",
+      "max_temp": "24"
+    },
+    "桃園市": {
+      "forecast_weather": "陣雨",
+      "rain_pct": "70",
+      "min_temp": "20",
+      "max_temp": "20"
     }
   }
 }
