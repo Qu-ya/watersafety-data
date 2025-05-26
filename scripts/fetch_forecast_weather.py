@@ -34,6 +34,8 @@ def _fetch() -> dict:
         raise RuntimeError(f"CWB API failure: {d.get('result', {}).get('message', d)}")
     return d
 
+import pprint, sys; pprint.pprint(raw, depth=2); sys.exit(0)
+
 # ---------- 解析 ----------
 def _parse(raw: dict) -> dict:
     recs = raw["records"]
