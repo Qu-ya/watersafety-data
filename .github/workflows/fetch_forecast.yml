@@ -1,6 +1,7 @@
 name: fetch-7day-forecast        # Workflow 名稱，可自行修改
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 */6 * * *"        # 每 6 小時 (UTC)；台灣時間 08:00‧14:00‧20:00‧02:00
   workflow_dispatch:             # 允許手動觸發
