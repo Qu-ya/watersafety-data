@@ -34,5 +34,12 @@ jobs:
           git config user.name  "AutoForecastBot"
           git config user.email "bot@github.com"
           git add quiz/forecast_weather.json
-          git commit -m "ci: update 7-day forecast $(date -u '+%Y-%m-%d %H:%M')"
-          git push
+
+          # ➜ 如果檔案有變動才提交，否則輸出提示並正常結束
+          if git diff --cached --quiet; then
+            echo "⚠️  No forecast update – nothing to commit."
+          else
+            git commit -m "ci: update 7-day forecast $(date -u '+%Y-%m-%d %H:%M')"
+            git push
+          fi
+
