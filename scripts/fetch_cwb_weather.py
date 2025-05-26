@@ -1,62 +1,95 @@
+# 1️⃣  用這段 HERE-DOC 覆蓋檔案內容
+cat > scripts/fetch_forecast_weather.py <<"EOF"
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-抓取中央氣象署 F-C0032-001 今明 36 小時預報
-* 一次抓 22 個縣市
-* 萃取：天氣現象(Wx)、12h降雨機率(PoP)、最低溫(MinT)、最高溫(MaxT)
-* 存成 quiz/weather_live.json（dict 以城市為 key，GPT 讀檔後再依需要篩選）
+抓中央氣象署 F-D0047-089（未來 7 日市區預報）
+輸出 quiz/forecast_weather.json
 """
 
-import json, os, time, requests
+import os
+import json
+import time
+import requests
 from pathlib import Path
 
-# 22 個縣市（順序可自訂，名稱須與氣象局資料一致）
-CITIES = [
-    "基隆市","臺北市","新北市","桃園市","新竹市","新竹縣",
-    "苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義市",
-    "嘉義縣","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣",
-    "臺東縣","澎湖縣","金門縣","連江縣"
-]
-
+# ══════════ 1. 設定 API KEY、URL 與輸出路徑 ══════════
 API_KEY = os.environ["CWB_API_KEY"]
-URL = (
-    "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001"
-    f"?locationName={','.join(CITIES)}"
-    "&format=JSON"
-    f"&Authorization={API_KEY}"
-)
+BASE_URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-089"
+PARAMS = {
+    "Authorization": API_KEY,
+    "format":        "JSON",
+    # 若要篩選城市，可加：
+    # "locationName": "臺北市,新北市,高雄市"
+}
+OUT_PATH = Path(__file__).resolve().parent.parent / "quiz" / "forecast_weather.json"
 
-OUT = Path(__file__).resolve().parent.parent / "quiz" / "weather_live.json"
+# ══════════ 2. 工具函式：從 ElementValue 拿值 ══════════
+def _first_time_block(elem: dict) -> dict:
+    """回傳 elem 裡的第一個時段物件（大寫 Time 或 小寫 time）"""
+    times = elem.get("Time") or elem.get("time") or []
+    return times[0] if times else {}
 
-def _pick(elem_list, code: str) -> str:
-    """從 weatherElement 中找出指定 elementName 的第一筆參數值"""
-    return next(e for e in elem_list if e["elementName"] == code)["time"][0]["parameter"]["parameterName"]
+def _get_elem_value(elem: dict) -> str:
+    """
+    從一個 weatherElement 的第一個時段，取 ElementValue 中的第一個值
+    （支援大寫 ElementValue 或 小寫 elementValue）
+    """
+    block = _first_time_block(elem)
+    vals  = block.get("ElementValue") or block.get("elementValue") or []
+    if isinstance(vals, list) and vals:
+        first = vals[0]
+        for v in first.values():
+            return v
+    return ""  # 若無任何值，回傳空字串
 
-def main() -> None:
-    r = requests.get(URL, timeout=10)
-    r.raise_for_status()
-    data = r.json()
+# ══════════ 3. 主程式流程 ══════════
+def main():
+    # --- 3.1 取得 API 原始資料 ---
+    resp = requests.get(BASE_URL, params=PARAMS, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+    if data.get("success") != "true":
+        raise RuntimeError(f"CWB API 回傳失敗：{data}")
 
-    weather_dict = {}
-    for loc in data["records"]["location"]:
-        name = loc["locationName"]
-        el   = loc["weatherElement"]
-        weather_dict[name] = {
-            "weather"     : _pick(el, "Wx"),
-            "pop_12h_pct" : _pick(el, "PoP"),
-            "temp_min_C"  : _pick(el, "MinT"),
-            "temp_max_C"  : _pick(el, "MaxT"),
+    # --- 3.2 抽出 locations 清單（支援大/小寫） ---
+    recs     = data["records"]
+    locs     = recs.get("locations") or recs.get("Locations") or []
+    if not locs:
+        raise RuntimeError(f"找不到 locations，keys={list(recs.keys())}")
+    loc_list = locs[0].get("location") or locs[0].get("Location") or []
+
+    # --- 3.3 逐一處理每個城市的三個元素 ---
+    forecast_data = {}
+    for loc in loc_list:
+        city_name = loc.get("locationName") or loc.get("LocationName", "").strip()
+        elems     = loc.get("weatherElement") or loc.get("WeatherElement") or []
+
+        temp_elem = next(e for e in elems if (e.get("elementName") or e.get("ElementName")) == "溫度")
+        rain_elem = next(e for e in elems if (e.get("elementName") or e.get("ElementName")) == "3小時降雨機率")
+        wx_elem   = next(e for e in elems if (e.get("elementName") or e.get("ElementName")) == "天氣現象")
+
+        forecast_weather = _get_elem_value(wx_elem)    # e.g. "多雲時晴"
+        rain_pct         = _get_elem_value(rain_elem)  # e.g. "30"
+        temp_val         = _get_elem_value(temp_elem)  # e.g. "26"
+
+        forecast_data[city_name] = {
+            "forecast_weather": forecast_weather,
+            "rain_pct"        : rain_pct,
+            "min_temp"        : temp_val,
+            "max_temp"        : temp_val,
         }
 
-    out_json = {
+    # --- 3.4 組出最終 JSON，並寫入檔案 ---
+    output = {
         "timestamp" : int(time.time()),
-        "source_url": URL,
-        "cities"    : weather_dict
+        "source_url": resp.url,
+        "cities"    : forecast_data
     }
-
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(out_json, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"✅ 已寫入 {OUT}")
+    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUT_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"✅ 寫入 {OUT_PATH}")
 
 if __name__ == "__main__":
     main()
+    
