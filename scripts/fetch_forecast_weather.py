@@ -30,11 +30,15 @@ def _fetch() -> dict:
     r = requests.get(BASE_URL, params=PARAMS, timeout=15)
     r.raise_for_status()
     d = r.json()
+
+    # 👉 把 debug 放這裡
+    import pprint, sys
+    pprint.pprint(d, depth=2)
+    sys.exit(0)        # 印完立刻結束程式（之後記得移除）
+    
     if d.get("success") != "true":
         raise RuntimeError(f"CWB API failure: {d.get('result', {}).get('message', d)}")
     return d
-
-import pprint, sys; pprint.pprint(raw, depth=2); sys.exit(0)
 
 # ---------- 解析 ----------
 def _parse(raw: dict) -> dict:
